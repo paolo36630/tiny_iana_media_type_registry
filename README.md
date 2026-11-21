@@ -43,3 +43,10 @@ The package exports:
 Some extensions are genuinely ambiguous. `.ts` is both `text/typescript` and `video/mp2t`, and `.js` is both `application/javascript` and `text/javascript`. The registry does not guess: `media_types_for_extension("ts")` raises `AmbiguousExtensionError`. Use `all_media_types_for_extension("ts")` to get the full tuple and decide for yourself. This is the one place where the library refuses to be clever, because any choice would be wrong for half the callers.
 
 Media types are matched case-insensitively and normalised to lower case. Parameters are parsed and preserved but are not part of the registry key, because the registry does not define a canonical parameter set for most types.
+
+## Design notes
+
+The window stores values eagerly rather than keeping running aggregates. Running
+sums drift with floating point over long streams, and recomputing from a small
+buffer is cheap enough that the drift is not worth the speed.
+
